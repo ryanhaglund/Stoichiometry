@@ -1,0 +1,23 @@
+Microsoft Visual Studio Solution File, Format Version 11.00
+# Visual Studio 2008
+
+Project("{E79E9CC5-D5AF-9369-A9A9-DF9AC1CCBECC}") = "Stoichiometry", "Assembly-CSharp.csproj", "{1FEBA822-55BC-3922-A7D3-1455BDC171FD}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{1FEBA822-55BC-3922-A7D3-1455BDC171FD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1FEBA822-55BC-3922-A7D3-1455BDC171FD}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1FEBA822-55BC-3922-A7D3-1455BDC171FD}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1FEBA822-55BC-3922-A7D3-1455BDC171FD}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(MonoDevelopProperties) = preSolution
+		StartupItem = Assembly-CSharp.csproj
+	EndGlobalSection
+EndGlobal
