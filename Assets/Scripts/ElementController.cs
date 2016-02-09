@@ -12,6 +12,9 @@ public class ElementController : MonoBehaviour
 	List<Element> Elements = new List<Element>();
 	List<ChemicalEquation> Equations = new List<ChemicalEquation>();
 	Subscript ss = new Subscript();
+	public Transform dragablePrefab;
+	public Transform testTransform;
+
 
 	public class Element
 	{
@@ -238,7 +241,8 @@ public class ElementController : MonoBehaviour
 
 		currentEquation = Equations[Equations.Count-1];
 		displayChemicalEquation();
-		equationHolder.GetComponent<EquationController>().addFormula(Equations[Equations.Count-1]);
+		setUpDragGame(8.25f, "g ", currentEquation.Formulas[0], currentEquation.Formulas[currentEquation.Formulas.Count-1], "Grams to Grams");
+		//equationHolder.GetComponent<EquationController>().addFormula(Equations[Equations.Count-1]);
 	}
 
 	public void solveWithGrams(int index, float weight)
@@ -330,6 +334,11 @@ public class ElementController : MonoBehaviour
 		return (moles * 6.02f * Mathf.Pow(10.0f, 23.0f));
 	}
 
+	float molesToMoles(ChemicalFormula formA, ChemicalFormula formB)
+	{
+		return (formA.formulaMultiplier / formB.formulaMultiplier);
+	}
+
 	float getMolarMass(ChemicalFormula form)
 	{
 		decimal molarMass = 0;
@@ -359,6 +368,46 @@ public class ElementController : MonoBehaviour
 		//work from first element of the most complex formula to the last
 		//balance as you go
 		//avoid breaking balance
+
+	}
+
+	public void setUpDragGame(float startingValue, string startingUnits, ChemicalFormula formulaA, ChemicalFormula formulaB, string convertType)
+	{
+		switch (convertType)
+		{
+			case "Grams to Grams":
+				{
+					Debug.Log("Given " + startingValue + startingUnits + " of " + formulaA.displayName + ", calculate the "); 
+					GameObject.Find("StartingPoint").GetComponent<Text>().text = startingValue + startingUnits + formulaA.displayName;
+					Transform part1 = Instantiate(dragablePrefab);
+					Debug.Log(part1.transform.name);
+					part1.transform.SetParent(testTransform);
+					part1.transform.localScale = new Vector3(1, 1, 1);
+					part1.transform.GetComponentInChildren<Text>().text = getMolarMass(formulaA).ToString("0.0000") + " g " + formulaA.displayName;
+					Transform part2 = Instantiate(dragablePrefab);
+					part2.transform.SetParent(testTransform);
+					part2.transform.localScale = new Vector3(1, 1, 1);
+					part2.transform.GetComponentInChildren<Text>().text = "1" + " mol " + formulaA.displayName ;
+					Transform part3 = Instantiate(dragablePrefab);
+					part3.transform.SetParent(testTransform);
+					part3.transform.localScale = new Vector3(1, 1, 1);
+					part3.transform.GetComponentInChildren<Text>().text = formulaA.formulaMultiplier + " mol " + formulaA.displayName ;
+					Transform part4 = Instantiate(dragablePrefab);
+					part4.transform.SetParent(testTransform);
+					part4.transform.localScale = new Vector3(1, 1, 1);
+					part4.transform.GetComponentInChildren<Text>().text = formulaB.formulaMultiplier + " mol " + formulaB.displayName ;
+					Transform part5 = Instantiate(dragablePrefab);
+					part5.transform.SetParent(testTransform);
+					part5.transform.localScale = new Vector3(1, 1, 1);
+					part5.transform.GetComponentInChildren<Text>().text = getMolarMass(formulaB).ToString("0.0000") + " g " + formulaB.displayName;
+					Transform part6 = Instantiate(dragablePrefab);
+					part6.transform.SetParent(testTransform);
+					part6.transform.localScale = new Vector3(1, 1, 1);
+					part6.transform.GetComponentInChildren<Text>().text = "1" + " mol " + formulaB.displayName;
+					break;
+				}
+		}
+
 
 	}
 }
