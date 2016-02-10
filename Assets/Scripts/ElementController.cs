@@ -288,18 +288,39 @@ public class ElementController : MonoBehaviour
 
 	void displayChemicalEquation()
 	{
+		if(GetComponent<CheckValueScript>())
+		{
+			GetComponent<CheckValueScript>().ResetArrays();
+		}
+
 		ChemicalEquation equ = currentEquation;
 		string hold = "";
 		for (int i = 0; i < equ.Formulas.Count; i++)
 		{
 			hold += equ.Formulas[i].formulaMultiplier + equ.Formulas[i].displayName;
+
+			if(GetComponent<CheckValueScript>())
+			{
+				GetComponent<CheckValueScript>().numbers.Add(equ.Formulas[i].formulaMultiplier);
+				GetComponent<CheckValueScript>().elements.Add(equ.Formulas[i].displayName);
+			}
+
 			if (i < equ.formulaOperators.Count)
 			{
 				hold += equ.formulaOperators[i];
+
+				if(GetComponent<CheckValueScript>())
+				{
+					GetComponent<CheckValueScript>().operators.Add(equ.formulaOperators[i]);
+				}
 			}
 		}
 		EquationText.text = hold;
 		//Debug.Log();
+		if(GetComponent<CheckValueScript>())
+		{
+			GetComponent<CheckValueScript>().UpdateValues();
+		}
 	}
 
 	float gramsToMoles(ChemicalFormula form, float weight)
