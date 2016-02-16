@@ -1,13 +1,11 @@
 ﻿<Properties StartupItem="Assembly-CSharp.csproj">
   <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" PreferredExecutionTarget="Unity.Instance.Unity Editor" />
-  <MonoDevelop.Ide.Workbench ActiveDocument="Assets\Scripts\ElementController.cs">
+  <MonoDevelop.Ide.Workbench ActiveDocument="Assets\Scripts\AnimationsController.cs">
     <Files>
-      <File FileName="Assets\Scripts\ElementController.cs" Line="258" Column="52" />
-      <File FileName="Assets\Scripts\EquationController.cs" Line="1" Column="1" />
-      <File FileName="Assets\Scripts\InputController.cs" Line="1" Column="1" />
-      <File FileName="Assets\Scripts\MenuNavigation.cs" Line="1" Column="1" />
-      <File FileName="Assets\Scripts\DropZone.cs" Line="1" Column="1" />
-      <File FileName="Assets\Scripts\Dragable.cs" Line="17" Column="5" />
+      <File FileName="Assets\Scripts\ElementController.cs" Line="1" Column="1" />
+      <File FileName="Assets\Scripts\CheckValueScript.cs" Line="75" Column="3" />
+      <File FileName="Assets\Scripts\VariableManipulator.cs" Line="29" Column="23" />
+      <File FileName="Assets\Scripts\AnimationsController.cs" Line="1" Column="1" />
     </Files>
   </MonoDevelop.Ide.Workbench>
   <MonoDevelop.Ide.DebuggingService.Breakpoints>
