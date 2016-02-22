@@ -14,6 +14,13 @@ public class ElementController : MonoBehaviour
 	Subscript ss = new Subscript();
 	public Transform dragablePrefab;
 	public Transform testTransform;
+	public List<GameObject> dropZoneList = new List<GameObject>();
+	public GameObject startingPoint;
+
+	List<string> numerValueList = new List<string>();
+	List<string> denomValueList = new List<string>();
+	List<string> numerUnitsList = new List<string>();
+	List<string> denomUnitsList = new List<string>();
 
 
 	public class Element
@@ -238,10 +245,26 @@ public class ElementController : MonoBehaviour
 		Equations[Equations.Count-1].Formulas[Equations[Equations.Count-1].Formulas.Count - 1].molarMass = getMolarMass(Equations[Equations.Count-1].Formulas[Equations[Equations.Count-1].Formulas.Count - 1]);
 		Equations[Equations.Count-1].balanced = true;
 
+		Equations.Add(new ChemicalEquation());
+		Equations[Equations.Count-1].Formulas.Add(new ChemicalFormula(2)); //Coefficient 2
+		Equations[Equations.Count-1].Formulas[Equations[Equations.Count-1].Formulas.Count - 1].Formula.Add(new Chemical(Elements[0], 2)); //2 Hydrogen
+		Equations[Equations.Count-1].Formulas[Equations[Equations.Count-1].Formulas.Count -	1].Formula.Add(new Chemical(Elements[7], 2)); // 2 Oxygen
+		Equations[Equations.Count-1].Formulas[Equations[Equations.Count-1].Formulas.Count - 1].molarMass = getMolarMass(Equations[Equations.Count-1].Formulas[Equations[Equations.Count-1].Formulas.Count - 1]);
+		Equations[Equations.Count-1].formulaOperators.Add(" --> "); // Reaction
+		Equations[Equations.Count-1].Formulas.Add(new ChemicalFormula(2)); //Coefficient 2
+		Equations[Equations.Count-1].Formulas[Equations[Equations.Count-1].Formulas.Count - 1].Formula.Add(new Chemical(Elements[0], 2)); // 2 Hydrogen
+		Equations[Equations.Count-1].Formulas[Equations[Equations.Count-1].Formulas.Count - 1].Formula.Add(new Chemical(Elements[7], 1)); //One Oxygen
+		Equations[Equations.Count-1].Formulas[Equations[Equations.Count-1].Formulas.Count - 1].molarMass = getMolarMass(Equations[Equations.Count-1].Formulas[Equations[Equations.Count-1].Formulas.Count - 1]);
+		Equations[Equations.Count-1].formulaOperators.Add(" + "); //Add
+		Equations[Equations.Count-1].Formulas.Add(new ChemicalFormula(1));//Coefficient 1
+		Equations[Equations.Count-1].Formulas[Equations[Equations.Count-1].Formulas.Count - 1].Formula.Add(new Chemical(Elements[7], 2));//2 Oxygen
+		Equations[Equations.Count-1].Formulas[Equations[Equations.Count-1].Formulas.Count - 1].molarMass = getMolarMass(Equations[Equations.Count-1].Formulas[Equations[Equations.Count-1].Formulas.Count - 1]);
+		Equations[Equations.Count-1].balanced = true;
+
 
 		currentEquation = Equations[Equations.Count-1];
 		displayChemicalEquation();
-		setUpDragGame(8.25f, "g ", currentEquation.Formulas[0], currentEquation.Formulas[currentEquation.Formulas.Count-1], "Grams to Grams");
+		//setUpDragGame(8.25f, "g " + currentEquation.Formulas[0].displayName, currentEquation.Formulas[0], currentEquation.Formulas[currentEquation.Formulas.Count-1], "Grams", "Grams");
 		//equationHolder.GetComponent<EquationController>().addFormula(Equations[Equations.Count-1]);
 	}
 
@@ -302,7 +325,7 @@ public class ElementController : MonoBehaviour
 			if(GetComponent<CheckValueScript>())
 			{
 				GetComponent<CheckValueScript>().numbers.Add(equ.Formulas[i].formulaMultiplier);
-				GetComponent<CheckValueScript>().elements.Add(equ.Formulas[i].displayName);
+				GetComponent<CheckValueScript>().elements.Add(equ.Formulas[i]);
 			}
 
 			if (i < equ.formulaOperators.Count)
@@ -392,43 +415,234 @@ public class ElementController : MonoBehaviour
 
 	}
 
-	public void setUpDragGame(float startingValue, string startingUnits, ChemicalFormula formulaA, ChemicalFormula formulaB, string convertType)
+	public void setUpDragGame(float startingValue, string startingUnits, ChemicalFormula formulaA, ChemicalFormula formulaB, string convertFrom, string convertTo)
 	{
-		switch (convertType)
+		Debug.Log("startingValue:" + startingValue + "   StartingUnits:" + startingUnits);
+		switch (startingUnits)
 		{
-			case "Grams to Grams":
+			case "Grams":
 				{
+					startingPoint.GetComponent<DragItemData>().units = "g " + formulaA.displayName;
+					break;
+				}
+			case "Liters":
+				{
+					startingPoint.GetComponent<DragItemData>().units = "L " + formulaA.displayName;
+					break;
+				}
+			case "Particles":
+				{
+					startingPoint.GetComponent<DragItemData>().units = "Part. " + formulaA.displayName;
+					break;
+				}
+			case "Moles":
+				{
+					startingPoint.GetComponent<DragItemData>().units = "mol " + formulaA.displayName;
+					break;
+				}
+		}
+		startingPoint.GetComponent<DragItemData>().value = startingValue.ToString();
+		startingPoint.GetComponent<Text>().text = startingPoint.GetComponent<DragItemData>().value + startingPoint.GetComponent<DragItemData>().units;
+		Transform part1 = Instantiate(dragablePrefab);
+		part1.transform.SetParent(testTransform);
+		part1.transform.localScale = new Vector3(1, 1, 1);
+		part1.GetComponent<DragItemData>().forumlaName = formulaA.displayName;
+		switch (convertFrom)
+		{
+			case "Grams":
+				{
+					part1.GetComponent<DragItemData>().units = "g " + formulaA.displayName;
+					part1.GetComponent<DragItemData>().value = getMolarMass(formulaA).ToString();
 					Debug.Log("Given " + startingValue + startingUnits + " of " + formulaA.displayName + ", calculate the "); 
-					GameObject.Find("StartingPoint").GetComponent<Text>().text = startingValue + startingUnits + formulaA.displayName;
-					Transform part1 = Instantiate(dragablePrefab);
-					Debug.Log(part1.transform.name);
-					part1.transform.SetParent(testTransform);
-					part1.transform.localScale = new Vector3(1, 1, 1);
-					part1.transform.GetComponentInChildren<Text>().text = getMolarMass(formulaA).ToString("0.0000") + " g " + formulaA.displayName;
-					Transform part2 = Instantiate(dragablePrefab);
-					part2.transform.SetParent(testTransform);
-					part2.transform.localScale = new Vector3(1, 1, 1);
-					part2.transform.GetComponentInChildren<Text>().text = "1" + " mol " + formulaA.displayName ;
-					Transform part3 = Instantiate(dragablePrefab);
-					part3.transform.SetParent(testTransform);
-					part3.transform.localScale = new Vector3(1, 1, 1);
-					part3.transform.GetComponentInChildren<Text>().text = formulaA.formulaMultiplier + " mol " + formulaA.displayName ;
-					Transform part4 = Instantiate(dragablePrefab);
-					part4.transform.SetParent(testTransform);
-					part4.transform.localScale = new Vector3(1, 1, 1);
-					part4.transform.GetComponentInChildren<Text>().text = formulaB.formulaMultiplier + " mol " + formulaB.displayName ;
-					Transform part5 = Instantiate(dragablePrefab);
-					part5.transform.SetParent(testTransform);
-					part5.transform.localScale = new Vector3(1, 1, 1);
-					part5.transform.GetComponentInChildren<Text>().text = getMolarMass(formulaB).ToString("0.0000") + " g " + formulaB.displayName;
-					Transform part6 = Instantiate(dragablePrefab);
-					part6.transform.SetParent(testTransform);
-					part6.transform.localScale = new Vector3(1, 1, 1);
-					part6.transform.GetComponentInChildren<Text>().text = "1" + " mol " + formulaB.displayName;
+					part1.transform.GetComponentInChildren<Text>().text = getMolarMass(formulaA).ToString("0.00") + " g " + formulaA.displayName;
+					break;
+				}
+			case "Liters":
+				{
+					part1.GetComponent<DragItemData>().units = "L " + formulaA.displayName;
+					part1.GetComponent<DragItemData>().value = "22.4";
+					part1.transform.GetComponentInChildren<Text>().text = "22.4" + " L " + formulaA.displayName;
+					break;
+				}
+			case "Particles":
+				{
+					part1.GetComponent<DragItemData>().units = "Part. " + formulaA.displayName;
+					part1.GetComponent<DragItemData>().value = "6.0223*10^23";
+					part1.transform.GetComponentInChildren<Text>().text = "6.0223*10^23" + " Part. " + formulaA.displayName;
+					break;
+				}
+			case "Moles":
+				{
+					//Destroy(part1.gameObject);
 					break;
 				}
 		}
 
+		//Static Reactants
+		Transform part2 = Instantiate(dragablePrefab);
+		part2.transform.SetParent(testTransform);
+		part2.transform.localScale = new Vector3(1, 1, 1);
+		part2.GetComponent<DragItemData>().units = "mol " + formulaA.displayName;
+		part2.GetComponent<DragItemData>().value = "1";
+		part2.GetComponent<DragItemData>().forumlaName = formulaA.displayName;
+		part2.transform.GetComponentInChildren<Text>().text = "1" + " mol " + formulaA.displayName ;
+		Transform part3 = Instantiate(dragablePrefab);
+		part3.transform.SetParent(testTransform);
+		part3.transform.localScale = new Vector3(1, 1, 1);
+		part3.GetComponent<DragItemData>().units = "mol " + formulaA.displayName;
+		part3.GetComponent<DragItemData>().value = formulaA.formulaMultiplier.ToString();
+		part3.GetComponent<DragItemData>().forumlaName = formulaA.displayName;
+		part3.transform.GetComponentInChildren<Text>().text = formulaA.formulaMultiplier + " mol " + formulaA.displayName;
 
+		//Static Products
+		Transform part4 = Instantiate(dragablePrefab);
+		part4.transform.SetParent(testTransform);
+		part4.transform.localScale = new Vector3(1, 1, 1);
+		part4.GetComponent<DragItemData>().units = "mol " + formulaB.displayName;
+		part4.GetComponent<DragItemData>().value = formulaB.formulaMultiplier.ToString();
+		part4.GetComponent<DragItemData>().forumlaName = formulaB.displayName;
+		part4.transform.GetComponentInChildren<Text>().text = formulaB.formulaMultiplier + " mol " + formulaB.displayName ;
+		Transform part6 = Instantiate(dragablePrefab);
+		part6.transform.SetParent(testTransform);
+		part6.transform.localScale = new Vector3(1, 1, 1);
+		part6.GetComponent<DragItemData>().units = "mol " + formulaB.displayName;
+		part6.GetComponent<DragItemData>().value = "1";
+		part6.GetComponent<DragItemData>().forumlaName = formulaB.displayName;
+		part6.transform.GetComponentInChildren<Text>().text = "1" + " mol " + formulaB.displayName;
+
+
+		Transform part5 = Instantiate(dragablePrefab);
+		part5.transform.SetParent(testTransform);
+		part5.transform.localScale = new Vector3(1, 1, 1);
+		part5.GetComponent<DragItemData>().forumlaName = formulaB.displayName;
+		switch (convertTo)
+		{
+			case "Grams":
+				{
+					part5.GetComponent<DragItemData>().units = "g " + formulaB.displayName;
+					part5.GetComponent<DragItemData>().value = getMolarMass(formulaB).ToString();
+					part5.transform.GetComponentInChildren<Text>().text = getMolarMass(formulaB).ToString("0.00") + " g " + formulaB.displayName;
+					break;
+				}
+			case "Liters":
+				{
+					part5.GetComponent<DragItemData>().units = "L " + formulaB.displayName;
+					part5.GetComponent<DragItemData>().value = "22.4";
+					part5.transform.GetComponentInChildren<Text>().text = "22.4" + " L " + formulaB.displayName;
+					break;
+				}
+			case "Particles":
+				{
+					part5.GetComponent<DragItemData>().units = "Part. " + formulaB.displayName;
+					part5.GetComponent<DragItemData>().value = "6.0223*10^23";
+					part5.transform.GetComponentInChildren<Text>().text = "6.0223*10^23" + " Part. " + formulaB.displayName;
+					break;
+				}
+			case "Moles":
+				{
+					//Destroy(part5.gameObject);
+					break;
+				}
+		}
+		calcTableResults();
+	}
+
+	public void calcTableResults()
+	{
+		float calculatedNumerator = 1.0f;
+		float calculatedDenominator = 1.0f;
+		string numerator = "";
+		string denominator = "";
+		numerUnitsList.Clear();
+		numerValueList.Clear();
+		denomUnitsList.Clear();
+		denomValueList.Clear();
+
+		numerUnitsList.Add(startingPoint.GetComponent<DragItemData>().units);
+		numerValueList.Add(startingPoint.GetComponent<DragItemData>().value);
+		for (int k = 0; k < dropZoneList.Count; k++)
+		{
+			if (dropZoneList[k].transform.childCount > 0)
+			{
+				if(dropZoneList[k].name == "StartingPoint" || dropZoneList[k].name == "DropZone1" || dropZoneList[k].name == "DropZone3" || dropZoneList[k].name == "DropZone5")
+				{
+					numerUnitsList.Add(dropZoneList[k].GetComponentInChildren<DragItemData>().units);
+					numerValueList.Add(dropZoneList[k].GetComponentInChildren<DragItemData>().value);
+				}
+				else if(dropZoneList[k].name == "DropZone2" || dropZoneList[k].name == "DropZone4" || dropZoneList[k].name == "DropZone6")
+				{
+					denomUnitsList.Add(dropZoneList[k].GetComponentInChildren<DragItemData>().units);
+					denomValueList.Add(dropZoneList[k].GetComponentInChildren<DragItemData>().value);
+				}
+			}
+		}
+			
+		for (int l = 0; l < numerUnitsList.Count; l++)
+		{
+			for (int m = 0; m < denomUnitsList.Count; m++)
+			{
+				if (numerUnitsList[l] == denomUnitsList[m])
+				{
+					numerUnitsList.RemoveAt(l);
+					denomUnitsList.RemoveAt(m);
+					l--;
+					break;
+				}
+			}
+		}
+		//used for displaying non-tabulated results (IE: 8*5*13*5)
+		/*
+		for (int i = 0; i < numerValueList.Count; i++)
+		{
+			numerator += numerValueList[i];
+			if (i < numerValueList.Count - 1)
+			{
+				numerator += " * ";
+			}
+		}
+		*/
+
+		for (int p = 0; p < numerValueList.Count; p++)
+		{
+			calculatedNumerator *= float.Parse(numerValueList[p]);
+			//Debug.Log("CalculatedNumber:" + calculatedNumerator);
+		}
+			
+		for (int q = 0; q < denomValueList.Count; q++)
+		{
+			calculatedDenominator *= float.Parse(denomValueList[q]);
+		}
+
+		//used for displaying non-tabulate results (IE: 5*8*9*7)
+		/*
+		for (int j = 0; j < denomValueList.Count; j++)
+		{
+			if (j == 0)
+			{
+				denominator += " / ";
+			}
+			denominator += denomValueList[j];
+			if (j < denomValueList.Count - 1)
+			{
+				denominator += " * ";
+			}
+		}
+		*/
+
+		for (int n = 0; n < numerUnitsList.Count; n++)
+		{
+			numerator += " " + numerUnitsList[n];
+		}
+		for (int o = 0; o < denomUnitsList.Count; o++)
+		{
+			if (o == 0)
+			{
+				denominator += " / ";
+			}
+			denominator += " " + denomUnitsList[o];
+		}
+			
+
+		GameObject.Find("Solution").GetComponent<Text>().text = (calculatedNumerator/calculatedDenominator).ToString("F") + numerator + denominator ;
 	}
 }

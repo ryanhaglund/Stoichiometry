@@ -6,6 +6,7 @@ public class Dragable : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDrag
 {
 	public Transform currentParent = null;
 	public Transform transferTransform;
+	public ElementController elmCont;
 
 	void Start()
 	{
@@ -28,7 +29,15 @@ public class Dragable : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDrag
 
 	public void OnEndDrag(PointerEventData eventData)
 	{
-		//Debug.Log("End dragging");
+		//removed because I needed to change the transform from dropzone using the doStuff() function.
+		/*Debug.Log("End dragging");
+		this.transform.SetParent(currentParent);
+		GetComponent<CanvasGroup>().blocksRaycasts = true;*/
+	}
+
+	public void doStuf()
+	{
+		Debug.Log("End dragging");
 		this.transform.SetParent(currentParent);
 		GetComponent<CanvasGroup>().blocksRaycasts = true;
 	}

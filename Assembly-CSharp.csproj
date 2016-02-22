@@ -47,6 +47,7 @@
   <ItemGroup>
      <Compile Include="Assets\Scripts\AnimationsController.cs" />
      <Compile Include="Assets\Scripts\CheckValueScript.cs" />
+     <Compile Include="Assets\Scripts\DragItemData.cs" />
      <Compile Include="Assets\Scripts\Dragable.cs" />
      <Compile Include="Assets\Scripts\DropZone.cs" />
      <Compile Include="Assets\Scripts\ElementController.cs" />
@@ -54,6 +55,7 @@
      <Compile Include="Assets\Scripts\InputController.cs" />
      <Compile Include="Assets\Scripts\MenuNavigation.cs" />
      <Compile Include="Assets\Scripts\SubscriptLibrary.cs" />
+     <Compile Include="Assets\Scripts\TextConversion.cs" />
      <Compile Include="Assets\Scripts\VariableManipulator.cs" />
  <Reference Include="UnityEngine.UI">
  <HintPath>D:/Unity/Editor/Data/UnityExtensions/Unity/GUISystem/UnityEngine.UI.dll</HintPath>

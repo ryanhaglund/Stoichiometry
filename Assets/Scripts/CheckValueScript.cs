@@ -7,7 +7,7 @@ using System.Collections.Generic;
 public class CheckValueScript : MonoBehaviour 
 {
 	public List<int> numbers = new List<int>();
-	public List<string> elements = new List<string>();
+	public List<ElementController.ChemicalFormula> elements = new List<ElementController.ChemicalFormula>();
 	public List<string> operators = new List<string>();
 
 	public Text twoXtwoLeft1;
@@ -54,10 +54,10 @@ public class CheckValueScript : MonoBehaviour
 			// 3 operators 2 plus signs and the equal
 			if(operators.Count == 3)
 			{
-				twoXtwoLeft1Formula.text = elements[0];
-				twoXtwoLeft2Formula.text = elements[1];
-				twoXtwoRight1Formula.text = elements[2];
-				twoXtwoRight2Formula.text = elements[3];
+				twoXtwoLeft1Formula.text = elements[0].displayName;
+				twoXtwoLeft2Formula.text = elements[1].displayName;
+				twoXtwoRight1Formula.text = elements[2].displayName;
+				twoXtwoRight2Formula.text = elements[3].displayName;
 			}
 			//2 operators plus sign and equal
 			else if(operators.Count == 2)
@@ -67,9 +67,9 @@ public class CheckValueScript : MonoBehaviour
 				{
 					right2.SetActive(false);
 
-					twoXtwoLeft1Formula.text = elements[0];
-					twoXtwoLeft2Formula.text = elements[1];
-					twoXtwoRight1Formula.text = elements[2];
+					twoXtwoLeft1Formula.text = elements[0].displayName;
+					twoXtwoLeft2Formula.text = elements[1].displayName;
+					twoXtwoRight1Formula.text = elements[2].displayName;
 
 				}
 				//a -> b + c
@@ -78,9 +78,9 @@ public class CheckValueScript : MonoBehaviour
 					Debug.Log(operators[0]);
 					left1.SetActive(false);
 
-					twoXtwoLeft2Formula.text = elements[0];
-					twoXtwoRight1Formula.text = elements[1];
-					twoXtwoRight2Formula.text = elements[2];
+					twoXtwoLeft2Formula.text = elements[0].displayName;
+					twoXtwoRight1Formula.text = elements[1].displayName;
+					twoXtwoRight2Formula.text = elements[2].displayName;
 				}
 			}
 			//single operator
@@ -89,8 +89,8 @@ public class CheckValueScript : MonoBehaviour
 				right2.SetActive(false);
 				left1.SetActive(false);
 
-				twoXtwoLeft2Formula.text = elements[0];
-				twoXtwoRight1Formula.text = elements[1];
+				twoXtwoLeft2Formula.text = elements[0].displayName;
+				twoXtwoRight1Formula.text = elements[1].displayName;
 			}
 		}
 	}
@@ -127,6 +127,36 @@ public class CheckValueScript : MonoBehaviour
 				{
 					correct = false;
 					break;
+				}
+			}
+			if (correct == true)
+			{
+				GetComponent<AnimationsController>().slideVaribaleTabOut();
+				if(operators.Count > 0)
+				{
+					// 3 operators 2 plus signs and the equal
+					if (operators.Count == 3)
+					{
+						GetComponent<ElementController>().setUpDragGame((float)System.Math.Round((Random.Range(0.50f, 10.00f)),2), PlayerPrefs.GetString("convertFrom"), elements[Random.Range(0,2)], elements[Random.Range(2,4)], PlayerPrefs.GetString("convertFrom"), PlayerPrefs.GetString("convertTo"));
+					}
+					//2 operators plus sign and equal
+					else if(operators.Count == 2)
+					{
+						// a + b -> c
+						if(operators[0] == " + ")
+						{
+							GetComponent<ElementController>().setUpDragGame((float)System.Math.Round((Random.Range(0.50f, 10.00f)),2), PlayerPrefs.GetString("convertFrom"), elements[Random.Range(0,2)], elements[2], PlayerPrefs.GetString("convertFrom"), PlayerPrefs.GetString("convertTo"));
+						}
+						//a -> b + c
+						else
+						{
+							GetComponent<ElementController>().setUpDragGame((float)System.Math.Round((Random.Range(0.50f, 10.00f)),2), PlayerPrefs.GetString("convertFrom"), elements[0], elements[Random.Range(1,3)], PlayerPrefs.GetString("convertFrom"), PlayerPrefs.GetString("convertTo"));
+						}
+					}
+					//single operator
+					else
+					{
+					}
 				}
 			}
 		}
